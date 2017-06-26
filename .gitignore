@@ -2,5 +2,8 @@
 *.jpg
 *.png
 *.txt
-out/*
 *.log
+/.idea
+/out
+/.idea_modules
+
