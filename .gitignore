@@ -7,3 +7,5 @@
 /out
 /.idea_modules
 *.iml
+src/META-INF
+
