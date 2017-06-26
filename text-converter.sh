@@ -2,7 +2,7 @@
 
 cnt=0
 
-for f in *.pdf; do
+for f in *.png; do
   echo "File -> $f"
   cnt=$((cnt+1))
   minus=$((${#f}-4))

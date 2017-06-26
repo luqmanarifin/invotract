@@ -1,6 +1,4 @@
-*/*.pdf
-*/*.jpg
-*/*.png
 *.pdf
 *.jpg
 *.png
+*.txt
