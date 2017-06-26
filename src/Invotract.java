@@ -1,3 +1,4 @@
+import ImageToText.ImageToText;
 import PdfToImage.PdfToImage;
 
 import java.util.List;
@@ -14,9 +15,10 @@ public class Invotract {
     }
     String filename = args[0];
 
+    //String filename = "/home/luqmanarifin/Code/invotract/102-TAC.pdf";
+
     List<String> filenames = PdfToImage.getImage(filename);
-
-
+    filename = ImageToText.getText(filenames);
   }
 
 }

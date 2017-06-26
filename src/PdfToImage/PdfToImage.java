@@ -21,6 +21,11 @@ public class PdfToImage {
 
   }
 
+  /**
+   *
+   * @param pdfPath
+   * @return path to the images of PDF. different page of PDF means different imagefile
+   */
   public static List<String> getImage(String pdfPath) {
     System.out.println("enter the function!");
     List<String> outputFiles = new ArrayList<>();
