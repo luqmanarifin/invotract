@@ -1,5 +1,6 @@
-package ImageToText;
+package jp.co.multibook.invotract.image2text;
 
+import jp.co.multibook.invotract.common.Common;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import org.apache.commons.io.FilenameUtils;
@@ -8,12 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by luqmanarifin on 6/26/17.
@@ -22,11 +18,6 @@ public class ImageToText {
 
   public ImageToText() {
 
-  }
-
-  static String readFile(String path) throws IOException {
-    byte[] encoded = Files.readAllBytes(Paths.get(path));
-    return new String(encoded);
   }
 
   /**
@@ -56,7 +47,7 @@ public class ImageToText {
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
-        allText += readFile(filepath + ".ocr.txt");
+        allText += Common.readFile(filepath + ".ocr.txt");
       } catch (IOException e) {
         e.printStackTrace();
       }

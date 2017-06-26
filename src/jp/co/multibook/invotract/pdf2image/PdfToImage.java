@@ -1,4 +1,4 @@
-package PdfToImage;
+package jp.co.multibook.invotract.pdf2image;
 
 import org.apache.commons.io.FilenameUtils;
 import org.ghost4j.document.PDFDocument;

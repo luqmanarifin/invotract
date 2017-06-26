@@ -1,5 +1,7 @@
-import ImageToText.ImageToText;
-import PdfToImage.PdfToImage;
+package jp.co.multibook.invotract;
+
+import jp.co.multibook.invotract.image2text.ImageToText;
+import jp.co.multibook.invotract.pdf2image.PdfToImage;
 
 import java.util.List;
 
