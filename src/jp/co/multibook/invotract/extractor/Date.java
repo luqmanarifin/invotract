@@ -1,9 +1,11 @@
 package jp.co.multibook.invotract.extractor;
 
+import jp.co.multibook.invotract.common.Serializable;
+
 /**
  * Created by luqmanarifin on 6/26/17.
  */
-public class Date {
+public class Date implements Serializable {
 
   private int date;
   private int month;
@@ -37,5 +39,15 @@ public class Date {
 
   public void setYear(int year) {
     this.year = year;
+  }
+
+  @Override
+  public String serialize() {
+    return null;
+  }
+
+  @Override
+  public void unserialize(String json) {
+
   }
 }
