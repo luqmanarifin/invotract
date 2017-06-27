@@ -1,6 +1,8 @@
 package jp.co.multibook.invotract.extractor;
 
 import jp.co.multibook.invotract.common.Common;
+import org.apache.commons.lang.StringUtils;
+import org.javatuples.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -19,7 +21,8 @@ public class Extractor {
   private String text;
   private String filePath;
 
-  private static char[] delimiters = {'-', '/'};
+  private static char[] dateDelimiters = {'-', '/'};
+  private static char[] amountProhibited = {'-', '/', '#', '%'};
 
   public Extractor(String filePath) {
     this.filePath = filePath;
@@ -55,7 +58,56 @@ public class Extractor {
   }
 
   private String getCompanyName() {
-    return null;
+    Process process = null;
+    try {
+      process = new ProcessBuilder("ner.sh", filePath, ">", filePath + ".ner").start();
+      process.waitFor();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+    String nerResult = "";
+    try {
+      nerResult = Common.readFile(filePath + ".ner");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    List<String> possibleCompanyName = new ArrayList<>();
+    Scanner scanner = new Scanner(nerResult);
+    boolean wordBeforeIsCompany = false;
+    while (scanner.hasNext()) {
+      String word = scanner.next();
+      String[] tokens = word.split("/");
+      if (tokens[tokens.length - 1].equals("ORGANIZATION")) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i + 1 < tokens.length; i++) {
+          if (i > 0) {
+            sb.append("/");
+          }
+          sb.append(tokens[i]);
+        }
+        String name = sb.toString();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        if (wordBeforeIsCompany) {
+          stringBuilder.append(possibleCompanyName.get(possibleCompanyName.size() - 1));
+          stringBuilder.append(" ");
+          possibleCompanyName.remove(possibleCompanyName.size() - 1);
+        }
+        stringBuilder.append(name);
+        possibleCompanyName.add(stringBuilder.toString());
+        wordBeforeIsCompany = true;
+      } else {
+        wordBeforeIsCompany = false;
+      }
+    }
+    System.out.println("possible company name:");
+    for (String name : possibleCompanyName) {
+      System.out.println("- " + name);
+    }
+    return possibleCompanyName.isEmpty()? "" : possibleCompanyName.get(0);
   }
 
   private Date getDate() {
@@ -82,8 +134,111 @@ public class Extractor {
     return "0";
   }
 
+  private boolean isPureNumber(String word) {
+    for (int i = 0; i < word.length(); i++) {
+      if (!Character.isDigit(word.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private long convertToAmount(String word) {
+    word = word.split("\\.")[0];
+    long number = 0;
+    for (int i = 0; i < word.length(); i++) {
+      if (Character.isDigit(word.charAt(i))) {
+        number = number * 10 + (word.charAt(i) - '0');
+      }
+    }
+    return number;
+  }
+
+  private boolean isProbableAmount(String word) {
+    for (int i = 0; i < word.length(); i++) {
+      char c = word.charAt(i);
+      if (Character.isDigit(c)) continue;
+      if (Character.isAlphabetic(c)) return false;
+      for (int j = 0; j < amountProhibited.length; j++) {
+        if (c == amountProhibited[j]) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  private boolean isProbableRow(String line) {
+    String[] tokens = line.split("\\s");
+    int counterNotAmount = 0;
+    for (int i = 0; i < tokens.length; i++) {
+      if (!isProbableAmount(tokens[i])) {
+        counterNotAmount++;
+      }
+    }
+    return !StringUtils.containsIgnoreCase(line, "total")
+      && isProbableAmount(tokens[tokens.length - 1])
+      && counterNotAmount > 0;
+  }
+
+  private Pair<Integer, Integer> getLongestFalseRange(boolean[] a) {
+    int beg = -1, end = -1, best = 0;
+    int last = -1;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i]) {
+        last = i;
+      }
+      if (i - last > best) {
+        best = i - last;
+        beg = last + 1;
+        end = i;
+      }
+    }
+    return new Pair<>(beg, end);
+  }
+
+  private Item getItem(String line) {
+    String[] tokens = line.split("\\s");
+    boolean[] isAmount = new boolean[tokens.length];
+
+    // looking for amount
+    long biggestAmount = 0;
+    for (int i = 0; i < tokens.length; i++) {
+      if (isAmount[i] = isProbableAmount(tokens[i])) {
+        biggestAmount = Math.max(biggestAmount, convertToAmount(tokens[i]));
+      }
+    }
+
+    // looking for name
+    Pair<Integer, Integer> nameRange = getLongestFalseRange(isAmount);
+    StringBuilder sbName = new StringBuilder();
+    for (int i = nameRange.getValue0(); i <= nameRange.getValue1(); i++) {
+      sbName.append(tokens[i]);
+    }
+
+    // looking for quantity
+    long quantity = -1;
+    for (int i = 0; i + 1 < tokens.length; i++) {
+      if (isPureNumber(tokens[i])) {
+        quantity = Long.parseLong(tokens[i]);
+        break;
+      }
+    }
+    if (quantity != -1) {
+      sbName.append(" [QTY: " + quantity + "]");
+    }
+    String name = sbName.toString();
+    return new Item(name, biggestAmount);
+  }
+
   private List<Item> getItems() {
-    return null;
+    List<Item> items = new ArrayList<>();
+    for (String line : lines) {
+      if (isProbableRow(line)) {
+        items.add(getItem(line));
+      }
+    }
+    return items;
   }
 
   private String getText() {
@@ -110,17 +265,23 @@ public class Extractor {
     String taxRate = "";
     for (int i = 0; i < word.length(); i++) {
       if (Character.isDigit(word.charAt(i))) {
-        if (taxRate.length() == 1) {
-          taxRate += ".";
-        }
         taxRate += word.charAt(i);
       }
+    }
+    if (taxRate.length() > 2) {
+      StringBuilder sb = new StringBuilder();
+      sb.append(taxRate.charAt(0));
+      sb.append(".");
+      for (int i = 1; i < taxRate.length(); i++) {
+        sb.append(taxRate.charAt(i));
+      }
+      taxRate = sb.toString();
     }
     return taxRate;
   }
 
   private boolean isProbableDate(String word) {
-    for (char delimiter : delimiters) {
+    for (char delimiter : dateDelimiters) {
       int[] count = new int[10];
       Arrays.fill(count, 0);
       String[] tokens = word.split(Character.toString(delimiter));
@@ -140,7 +301,7 @@ public class Extractor {
   }
 
   private Date convertToDate(String word) {
-    for (char delimiter : delimiters) {
+    for (char delimiter : dateDelimiters) {
       String[] tokens = word.split(Character.toString(delimiter));
       boolean possible = tokens.length == 3;
       for (String token : tokens) {
