@@ -1,6 +1,9 @@
 package jp.co.multibook.invotract.extractor;
 
 import jp.co.multibook.invotract.common.Serializable;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * Created by luqmanarifin on 6/26/17.
@@ -33,11 +36,23 @@ public class Item implements Serializable {
 
   @Override
   public String serialize() {
-    return null;
+    JSONObject json = new JSONObject();
+    json.put("name", name);
+    json.put("amount", amount);
+    return json.toString();
   }
 
   @Override
   public void unserialize(String json) {
+    JSONParser parser = new JSONParser();
+    JSONObject jsonObject = null;
+    try {
+      jsonObject = (JSONObject) parser.parse(json);
 
+      this.name = (String) jsonObject.get("name");
+      this.amount = (long) jsonObject.get("amount");
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
   }
 }
