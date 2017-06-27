@@ -45,25 +45,18 @@ public class Date implements Serializable {
   }
 
   @Override
-  public String serialize() {
+  public JSONObject serialize() {
     JSONObject json = new JSONObject();
     json.put("date", date);
     json.put("month", month);
     json.put("year", year);
-    return json.toString();
+    return json;
   }
 
   @Override
-  public void unserialize(String json) {
-    JSONParser parser = new JSONParser();
-    JSONObject jsonObject = null;
-    try {
-      jsonObject = (JSONObject) parser.parse(json);
-      this.date = (int) jsonObject.get("date");
-      this.month = (int) jsonObject.get("month");
-      this.year = (int) jsonObject.get("year");
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
+  public void unserialize(JSONObject json) {
+    this.date = (int) json.get("date");
+    this.month = (int) json.get("month");
+    this.year = (int) json.get("year");
   }
 }

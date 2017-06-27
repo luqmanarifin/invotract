@@ -26,16 +26,7 @@ public class ImageToText {
    */
   public static String getText(List<String> filepaths) {
     String basename = FilenameUtils.removeExtension(filepaths.get(0));
-    File file = new File(basename);
-    try {
-      if (file.createNewFile()) {
-        System.out.println("Create file success");
-      } else {
-        System.out.println("File has been created before");
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+
     String allText = "";
     Tesseract instance = Tesseract.getInstance(); // JNA Interface Mapping
     instance.setDatapath(System.getenv("TESSDATA_PREFIX"));
@@ -53,16 +44,9 @@ public class ImageToText {
       }
     }
     System.out.println(allText);
-    PrintWriter out = null;
-    try {
-      out = new PrintWriter(basename + ".txt");
-      System.out.println(basename + ".txt");
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
-    out.println(allText);
-    out.close();
-    return file.toString();
+    String resultPath = basename + ".txt";
+    Common.writeFile(resultPath, allText);
+    return resultPath;
   }
 
   /**
@@ -75,16 +59,7 @@ public class ImageToText {
     System.out.println("environment " + env);
 
     String basename = FilenameUtils.removeExtension(filepaths.get(0));
-    File file = new File(basename);
-    try {
-      if (file.createNewFile()) {
-        System.out.println("Create file success");
-      } else {
-        System.out.println("File has been created before");
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+
     String allText = "";
     Tesseract instance = Tesseract.getInstance(); // JNA Interface Mapping
     instance.setDatapath(System.getenv("TESSDATA_PREFIX"));
@@ -96,16 +71,9 @@ public class ImageToText {
       }
     }
     System.out.println(allText);
-    PrintWriter out = null;
-    try {
-      out = new PrintWriter(basename + ".txt");
-      System.out.println(basename + ".txt");
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
-    out.println(allText);
-    out.close();
-    return file.toString();
+    String resultPath = basename + ".txt";
+    Common.writeFile(resultPath, allText);
+    return resultPath;
   }
 
 }

@@ -35,24 +35,16 @@ public class Item implements Serializable {
   }
 
   @Override
-  public String serialize() {
+  public JSONObject serialize() {
     JSONObject json = new JSONObject();
     json.put("name", name);
     json.put("amount", amount);
-    return json.toString();
+    return json;
   }
 
   @Override
-  public void unserialize(String json) {
-    JSONParser parser = new JSONParser();
-    JSONObject jsonObject = null;
-    try {
-      jsonObject = (JSONObject) parser.parse(json);
-
-      this.name = (String) jsonObject.get("name");
-      this.amount = (long) jsonObject.get("amount");
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
+  public void unserialize(JSONObject json) {
+    this.name = (String) json.get("name");
+    this.amount = (long) json.get("amount");
   }
 }

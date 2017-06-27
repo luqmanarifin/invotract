@@ -10,3 +10,4 @@
 src/META-INF
 *.hocr
 *.ner
+*.json

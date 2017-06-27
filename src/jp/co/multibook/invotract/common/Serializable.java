@@ -1,13 +1,15 @@
 package jp.co.multibook.invotract.common;
 
+import org.json.simple.JSONObject;
+
 /**
  * Created by luqmanarifin on 6/26/17.
  */
 public interface Serializable {
 
-  String serialize();
+  JSONObject serialize();
 
-  void unserialize(String json);
+  void unserialize(JSONObject json);
 
 }
 

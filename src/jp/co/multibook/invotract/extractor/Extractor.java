@@ -1,12 +1,15 @@
 package jp.co.multibook.invotract.extractor;
 
 import jp.co.multibook.invotract.common.Common;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.javatuples.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +25,8 @@ public class Extractor {
   private String filePath;
 
   private static char[] dateDelimiters = {'-', '/'};
-  private static char[] amountProhibited = {'-', '/', '#', '%'};
+  private static char[] amountProhibited = {'-', '/', '#', '%', '—'};
+  private static String[] rowProhibited = {"from", "bill", "to", "invoice"};
 
   public Extractor(String filePath) {
     this.filePath = filePath;
@@ -47,32 +51,36 @@ public class Extractor {
 
     JSONObject json = new JSONObject();
     json.put("companyName", companyName);
-    json.put("date", date.serialize());
+    if (date != null) {
+      json.put("date", date.serialize());
+    }
     json.put("taxRate", taxRate);
     JSONArray jsonItems = new JSONArray();
     for (Item item : items) {
       jsonItems.add(item.serialize());
     }
     json.put("items", jsonItems);
-    return json.toString();
+    return json.toJSONString();
   }
 
   private String getCompanyName() {
     Process process = null;
     try {
-      process = new ProcessBuilder("ner.sh", filePath, ">", filePath + ".ner").start();
+      process = new ProcessBuilder("ner.sh", filePath).start();
       process.waitFor();
     } catch (IOException e) {
       e.printStackTrace();
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    String nerResult = "";
+    InputStream inputStream = process.getInputStream();
+    String nerResult = null;
     try {
-      nerResult = Common.readFile(filePath + ".ner");
+      nerResult = IOUtils.toString(inputStream);
     } catch (IOException e) {
       e.printStackTrace();
     }
+    Common.writeFile(filePath + ".ner", nerResult);
 
     List<String> possibleCompanyName = new ArrayList<>();
     Scanner scanner = new Scanner(nerResult);
@@ -107,6 +115,7 @@ public class Extractor {
     for (String name : possibleCompanyName) {
       System.out.println("- " + name);
     }
+    System.out.println();
     return possibleCompanyName.isEmpty()? "" : possibleCompanyName.get(0);
   }
 
@@ -170,6 +179,13 @@ public class Extractor {
 
   private boolean isProbableRow(String line) {
     String[] tokens = line.split("\\s");
+    for (int i = 0; i < tokens.length; i++) {
+      for (int j = 0; j < rowProhibited.length; j++) {
+        if (tokens[i].equalsIgnoreCase(rowProhibited[j])) {
+          return false;
+        }
+      }
+    }
     int counterNotAmount = 0;
     for (int i = 0; i < tokens.length; i++) {
       if (!isProbableAmount(tokens[i])) {
@@ -177,6 +193,8 @@ public class Extractor {
       }
     }
     return !StringUtils.containsIgnoreCase(line, "total")
+      && !StringUtils.containsIgnoreCase(line, "tax")
+      && tokens.length > 0
       && isProbableAmount(tokens[tokens.length - 1])
       && counterNotAmount > 0;
   }
@@ -213,6 +231,9 @@ public class Extractor {
     Pair<Integer, Integer> nameRange = getLongestFalseRange(isAmount);
     StringBuilder sbName = new StringBuilder();
     for (int i = nameRange.getValue0(); i <= nameRange.getValue1(); i++) {
+      if (i > nameRange.getValue0()) {
+        sbName.append(" ");
+      }
       sbName.append(tokens[i]);
     }
 
@@ -238,6 +259,15 @@ public class Extractor {
         items.add(getItem(line));
       }
     }
+    long tot = 0;
+    for (int i = 0; i + 1 < items.size(); i++) {
+      tot += items.get(i).getAmount();
+    }
+
+    // possibility of including TOTAL ROW
+    if (!items.isEmpty() && tot == items.get(items.size() - 1).getAmount()) {
+      items.remove(items.get(items.size() - 1));
+    }
     return items;
   }
 
@@ -245,11 +275,23 @@ public class Extractor {
     return this.text;
   }
 
+  private String cleanAfterPercent(String word) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < word.length(); i++) {
+      sb.append(word.charAt(i));
+      if (word.charAt(i) == '%') {
+        break;
+      }
+    }
+    return sb.toString();
+  }
+
   private boolean isProbableTax(String word) {
-    word = word.trim();
+    word = cleanAfterPercent(word);
+
     boolean alphabetExist = false;
     for (int i = 0; i < word.length(); i++) {
-      if (Character.isDigit(word.charAt(i))) {
+      if (Character.isAlphabetic(word.charAt(i))) {
         alphabetExist = true;
       }
     }
@@ -262,22 +304,7 @@ public class Extractor {
    * @return
    */
   private String convertToTax(String word) {
-    String taxRate = "";
-    for (int i = 0; i < word.length(); i++) {
-      if (Character.isDigit(word.charAt(i))) {
-        taxRate += word.charAt(i);
-      }
-    }
-    if (taxRate.length() > 2) {
-      StringBuilder sb = new StringBuilder();
-      sb.append(taxRate.charAt(0));
-      sb.append(".");
-      for (int i = 1; i < taxRate.length(); i++) {
-        sb.append(taxRate.charAt(i));
-      }
-      taxRate = sb.toString();
-    }
-    return taxRate;
+    return cleanAfterPercent(word);
   }
 
   private boolean isProbableDate(String word) {
@@ -289,6 +316,7 @@ public class Extractor {
       for (String token : tokens) {
         if (token.length() >= 10) {
           possible = false;
+          break;
         }
         count[token.length()]++;
       }
