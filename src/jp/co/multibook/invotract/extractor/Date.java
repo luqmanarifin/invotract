@@ -2,8 +2,6 @@ package jp.co.multibook.invotract.extractor;
 
 import jp.co.multibook.invotract.common.Serializable;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
  * Created by luqmanarifin on 6/26/17.

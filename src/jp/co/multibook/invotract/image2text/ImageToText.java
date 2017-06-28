@@ -6,12 +6,12 @@ import net.sourceforge.tess4j.TesseractException;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 /**
+ * Using Tesseract binary distribution
+ *
  * Created by luqmanarifin on 6/26/17.
  */
 public class ImageToText {

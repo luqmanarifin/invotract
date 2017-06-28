@@ -9,13 +9,14 @@ import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 /**
+ * Using Stanford NER binary distribution, add it to $PATH to ner.sh can be accessed everywhere
+ *
  * Created by luqmanarifin on 6/26/17.
  */
 public class Extractor {

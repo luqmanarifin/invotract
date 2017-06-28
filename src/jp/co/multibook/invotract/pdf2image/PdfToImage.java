@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Using Ghostcript library as engine
+ *
  * Created by luqmanarifin on 6/26/17.
  */
 public class PdfToImage {
