@@ -37,7 +37,7 @@ public class Invotract {
     if (output.equals("stdout")) {
       System.out.println(extractor.getJsonSummary());
     } else {
-      Common.writeFile("result.json", extractor.getJsonSummary());
+      Common.writeFile(output, extractor.getJsonSummary());
     }
   }
 
