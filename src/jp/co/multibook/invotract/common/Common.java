@@ -31,4 +31,6 @@ public class Common {
     out.close();
   }
 
+  public static double PIXEL_TOLERANCE = 2;
+
 }

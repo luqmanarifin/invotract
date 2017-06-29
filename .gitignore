@@ -11,3 +11,5 @@ src/META-INF
 *.hocr
 *.ner
 *.json
+*.tetml
+*.sentences
