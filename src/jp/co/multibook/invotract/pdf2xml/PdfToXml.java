@@ -14,6 +14,7 @@ public class PdfToXml {
    * @return path to the result XML file
    */
   public static String getXmlOcr(String filePath) {
+
     return null;
   }
 
