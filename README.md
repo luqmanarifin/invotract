@@ -3,8 +3,8 @@ Extract some known fields of invoices such of organization name, date, invoice a
 
 ## Dependencies
 
-You should have these dependencies to run this project. I'm only demonstrate installation for Ubuntu, tested on Ubuntu 16.04.
-Other operating system installation will vary.
+You should have these dependencies to run this project. I only demonstrate installation for Ubuntu, tested on Ubuntu 16.04.
+For other operating system, installation will vary.
 
 ### Tesseract
 
