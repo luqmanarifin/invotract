@@ -36,7 +36,7 @@ Download from this link
 
     http://www.pdflib.com/download/tet/
 
-Add `<directory you unzip the file>/bin` to `$PATH` environment variable. Make sure that binary file `tet` can be executed from any directories.
+Unzip the file. Then add `<directory you unzip the file>/bin` to `$PATH` environment variable. Make sure that binary file `tet` can be executed from any directories.
 
 ## Usage
 
