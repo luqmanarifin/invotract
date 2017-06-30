@@ -5,7 +5,6 @@ import jp.co.multibook.invotract.extractor.Extractor;
 import jp.co.multibook.invotract.image2text.ImageToText;
 import jp.co.multibook.invotract.pdf2image.PdfToImage;
 import jp.co.multibook.invotract.pdf2sentence.PdfToSentence;
-import jp.co.multibook.invotract.pdf2sentence.Sentence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,6 @@ public class Invotract {
       System.out.println("Usage: java -jar invotract.jar <PDF file>");
       return;
     }
-
     pdfToSentence(args);
   }
 

@@ -40,17 +40,19 @@ public class PdfToSentence {
    */
   private static String getXmlOcr(String filePath) {
     System.out.println("get xml ocr");
+
+    String name = FilenameUtils.removeExtension(filePath) + ".tetml";
+
     Process process = null;
     try {
-      process = new ProcessBuilder("tet", "--tetml", "wordplus", filePath).start();
+      process = new ProcessBuilder("tet", "--outfile", name, "--tetml", "wordplus", filePath).start();
       process.waitFor();
     } catch (IOException e) {
       e.printStackTrace();
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    String basePath = FilenameUtils.removeExtension(filePath);
-    return basePath + ".tetml";
+    return name;
   }
 
   /**
@@ -210,11 +212,19 @@ public class PdfToSentence {
    * @return path file to the written sentence
    */
   private static String writeToFile(String pdfName, List<Sentence> sentences) {
-    String all = "";
+    String all = "@RELATION invoices\n\n";
+    all += "@ATTRIBUTE x REAL\n";
+    all += "@ATTRIBUTE y REAL\n";
+    all += "@ATTRIBUTE endX REAL\n";
+    all += "@ATTRIBUTE size REAL\n";
+    all += "@ATTRIBUTE text string\n";
+    all += "@ATTRIBUTE class {yes, no}\n\n";
+
+    all += "@DATA\n";
     for (Sentence sentence : sentences) {
-      all += sentence.toString() + "\n";
+      all += sentence.toString() + ",no\n";
     }
-    String name = FilenameUtils.removeExtension(pdfName) + ".sentences";
+    String name = FilenameUtils.removeExtension(pdfName) + ".arff";
     Common.writeFile(name, all);
     return name;
   }
