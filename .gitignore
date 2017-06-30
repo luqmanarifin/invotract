@@ -14,3 +14,4 @@ src/META-INF
 *.tetml
 *.sentences
 *.arff
+*/*.arff
