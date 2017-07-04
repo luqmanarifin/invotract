@@ -1,6 +1,7 @@
 package jp.co.multibook.invotract.pdf2sentence;
 
 import jp.co.multibook.invotract.common.Serializable;
+import jp.co.multibook.invotract.pattern.model.Instance;
 import org.json.simple.JSONObject;
 
 /**
@@ -15,6 +16,10 @@ public class Sentence implements Serializable{
   private double size;
 
   private String text;
+  private boolean clazz;
+
+  public Sentence() {
+  }
 
   public Sentence(double x, double y, double endX, double size, String text) {
     this.x = x;
@@ -87,10 +92,11 @@ public class Sentence implements Serializable{
   @Override
   public String toString() {
     String string = Double.toString(x) + ","
-                  + Double.toString(y) + ","
-                  + Double.toString(endX) + ","
-                  + Double.toString(size) + ","
-                  + "\"" + text.replaceAll("\"", "") + "\"";
+      + Double.toString(y) + ","
+      + Double.toString(endX) + ","
+      + Double.toString(size) + ","
+      + "\"" + text.replaceAll("\"", "") + "\"";
     return string;
   }
+
 }

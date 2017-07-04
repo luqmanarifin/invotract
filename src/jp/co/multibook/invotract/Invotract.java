@@ -15,14 +15,15 @@ import java.util.List;
  */
 public class Invotract {
 
-  public static void main(String[] args) {
-    /*
+  public static void main(String[] args) throws Exception {
     if (args.length == 0) {
       System.out.println("Usage: java -jar invotract.jar <PDF file>");
       return;
     }
-    */
     PatternDistinguisher patternDistinguisher = new PatternDistinguisher();
+    System.out.println(args.length);
+    for (String arg : args) System.out.println(arg);
+    patternDistinguisher.addPattern(args[0]);
   }
 
   public static void pdfToJson(String[] args) {

@@ -28,10 +28,14 @@ public class PdfToSentence {
    * @return path to sentence file
    */
   public static String getSentence(String filePath) {
+    List<Sentence> sentences = getSentenceList(filePath);
+    return writeToFile(filePath, sentences);
+  }
+
+  public static List<Sentence> getSentenceList(String filePath) {
     String xmlPath = getXmlOcr(filePath);
     List<Sentence> words = extract(xmlPath);
-    List<Sentence> sentences = arrangeSentence(words);
-    return writeToFile(filePath, sentences);
+    return arrangeSentence(words);
   }
 
   /**
