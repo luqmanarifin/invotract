@@ -1,4 +1,4 @@
-package jp.co.multibook.invotract.pattern_distinguisher;
+package jp.co.multibook.invotract.pattern;
 
 /**
  * Created by luqmanarifin on 7/3/17.
