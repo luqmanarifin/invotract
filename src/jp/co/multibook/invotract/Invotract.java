@@ -3,6 +3,7 @@ package jp.co.multibook.invotract;
 import jp.co.multibook.invotract.common.Common;
 import jp.co.multibook.invotract.extractor.Extractor;
 import jp.co.multibook.invotract.image2text.ImageToText;
+import jp.co.multibook.invotract.pattern.PatternDistinguisher;
 import jp.co.multibook.invotract.pdf2image.PdfToImage;
 import jp.co.multibook.invotract.pdf2sentence.PdfToSentence;
 
@@ -15,11 +16,13 @@ import java.util.List;
 public class Invotract {
 
   public static void main(String[] args) {
+    /*
     if (args.length == 0) {
       System.out.println("Usage: java -jar invotract.jar <PDF file>");
       return;
     }
-    pdfToSentence(args);
+    */
+    PatternDistinguisher patternDistinguisher = new PatternDistinguisher();
   }
 
   public static void pdfToJson(String[] args) {

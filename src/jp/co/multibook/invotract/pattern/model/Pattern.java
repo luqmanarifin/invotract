@@ -18,6 +18,9 @@ public class Pattern extends Executor {
   private String filePath;
   private String sentences;
 
+  public Pattern() {
+  }
+
   public Pattern(long id, String filePath, String sentences) {
     this.id = id;
     this.filePath = filePath;
