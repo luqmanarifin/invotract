@@ -12,10 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import weka.classifiers.trees.RandomTree;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by luqmanarifin on 7/3/17.
@@ -181,20 +178,47 @@ public class PatternDistinguisher {
    * @return boolean class of prediction result
    */
   private Result learningTheModel(String trainingPath, String testPath) {
+    String[] recallArgs = {
+      "-t", trainingPath,
+      "-T", testPath,
+      "-K", "0", "-M", "1.0", "-V", "0.001", "-S", "1"};
+    String rawOutputRecall = getWekaOutput(recallArgs);
+    Scanner scanner = new Scanner(rawOutputRecall);
+    int n = -1;
+    double recall = -1;
+    while (scanner.hasNextLine()) {
+      String line = scanner.nextLine();
+      String[] token = line.split("\\s");
+      if (token.length == 5) {
+        if (token[0].equals("Total") && token[1].equals("Number")
+          && token[2].equals("of") && token[3].equals("Instances")) {
+          n = Integer.parseInt(token[4]);
+        }
+      }
+      if (token.length == 9) {
+        if (token[8].equals("yes")) {
+          recall = Double.parseDouble(token[3]);
+        }
+      }
+    }
+
     String[] instancesArgs = {
       "-t", trainingPath,
       "-T", testPath,
       "-K", "0", "-M", "1.0", "-V", "0.001", "-S", "1",
       "-classifications", "weka.classifiers.evaluation.output.prediction.CSV"};
     String rawOutputInstances = getWekaOutput(instancesArgs);
-
-    String[] recallArgs = {
-      "-t", trainingPath,
-      "-T", testPath,
-      "-K", "0", "-M", "1.0", "-V", "0.001", "-S", "1"};
-    String rawOutputRecall = getWekaOutput(recallArgs);
-
-    return null;
+    scanner = new Scanner(rawOutputInstances);
+    boolean[] predictions = new boolean[n];
+    while (scanner.hasNextLine()) {
+      String line = scanner.nextLine();
+      String[] token = line.split(",");
+      if (token.length == 5) {
+        int id = Integer.parseInt(token[0]) - 1;
+        predictions[id] = token[2].split(":")[1].equals("yes");
+      }
+    }
+    return new Result(recall, predictions);
   }
 
   private String getWekaOutput(String[] args) {
