@@ -103,14 +103,11 @@ public class PatternDistinguisher {
         yesClass++;
       }
     }
-    /*
     if (yesClass < keywordLimit) {
       return getSimilarityByGeometry(instances, document, isKeyword);
     } else {
-      return getSimilarityByMachineLearning(instances, document, isKeyword);
+      return getSimilarityByMachineLearning(instances, document);
     }
-    */
-    return getSimilarityByMachineLearning(instances, document);
   }
 
   private double getSimilarityByGeometry(List<Instance> instances, List<Sentence> document, boolean[] isKeyword) {
@@ -168,7 +165,7 @@ public class PatternDistinguisher {
     String testText = PatternService.convertInstanceListToText(documentInstances);
     Common.writeFile("training.arff", trainingText);
     Common.writeFile("test.arff", testText);
-    return learningTheModel(trainingText, testText);
+    return learningTheModel("training.arff", "test.arff");
   }
 
   /**
@@ -188,7 +185,8 @@ public class PatternDistinguisher {
     double recall = -1;
     while (scanner.hasNextLine()) {
       String line = scanner.nextLine();
-      String[] token = line.split("\\s");
+      line = line.trim();
+      String[] token = line.split("\\s+");
       if (token.length == 5) {
         if (token[0].equals("Total") && token[1].equals("Number")
           && token[2].equals("of") && token[3].equals("Instances")) {
@@ -197,7 +195,7 @@ public class PatternDistinguisher {
       }
       if (token.length == 9) {
         if (token[8].equals("yes")) {
-          recall = Double.parseDouble(token[3]);
+          recall = Double.parseDouble(token[3]) * 100;
         }
       }
     }
@@ -206,7 +204,7 @@ public class PatternDistinguisher {
       "-t", trainingPath,
       "-T", testPath,
       "-K", "0", "-M", "1.0", "-V", "0.001", "-S", "1",
-      "-classifications", "weka.classifiers.evaluation.output.prediction.CSV"};
+      "-classifications", "\"weka.classifiers.evaluation.output.prediction.CSV\""};
     String rawOutputInstances = getWekaOutput(instancesArgs);
     scanner = new Scanner(rawOutputInstances);
     boolean[] predictions = new boolean[n];
@@ -214,8 +212,12 @@ public class PatternDistinguisher {
       String line = scanner.nextLine();
       String[] token = line.split(",");
       if (token.length == 5) {
-        int id = Integer.parseInt(token[0]) - 1;
-        predictions[id] = token[2].split(":")[1].equals("yes");
+        try {
+          int id = Integer.parseInt(token[0]) - 1;
+          predictions[id] = token[2].split(":")[1].equals("yes");
+        } catch (Exception e) {
+
+        }
       }
     }
     return new Result(recall, predictions);
@@ -226,15 +228,15 @@ public class PatternDistinguisher {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     PrintStream ps = new PrintStream(baos);
     // IMPORTANT: Save the old System.out!
-    PrintStream old = System.err;
+    PrintStream old = System.out;
     // Tell Java to use your special stream
-    System.setErr(ps);
+    System.setOut(ps);
 
     RandomTree.main(args);
 
     // Put things back
     System.out.flush();
-    System.setErr(old);
+    System.setOut(old);
     // Show what happened
     return baos.toString();
   }
