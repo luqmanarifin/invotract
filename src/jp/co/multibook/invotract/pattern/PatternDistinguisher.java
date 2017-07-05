@@ -3,6 +3,7 @@ package jp.co.multibook.invotract.pattern;
 import jp.co.multibook.invotract.common.Common;
 import jp.co.multibook.invotract.pattern.model.Instance;
 import jp.co.multibook.invotract.pattern.model.Pattern;
+import jp.co.multibook.invotract.pattern.model.Result;
 import jp.co.multibook.invotract.pattern.service.PatternService;
 import jp.co.multibook.invotract.pdf2sentence.PdfToSentence;
 import jp.co.multibook.invotract.pdf2sentence.Sentence;
@@ -24,7 +25,7 @@ public class PatternDistinguisher {
   private final static double similarPercentage = 80;
   private final static double fontSizeError = 0.2;
   private final static int keywordLimit = 30;
-  private final static String[] keywords = {
+  public final static String[] keywords = {
     "invoice",
     "bill",
     "date",
@@ -51,16 +52,7 @@ public class PatternDistinguisher {
     Pattern sourcePattern = getSimilarPattern(sentences);
     List<Instance> instances = new ArrayList<>();
     for (Sentence sentence : sentences) {
-      double x = sentence.getX();
-      double y = sentence.getY();
-      double size = sentence.getSize();
-      boolean clazz = false;
-      for (int i = 0; i < keywords.length && !clazz; i++) {
-        if (StringUtils.containsIgnoreCase(sentence.getText(), keywords[i])) {
-          clazz = true;
-        }
-      }
-      instances.add(new Instance(x, y, size, clazz));
+      instances.add(sentence.toInstance());
     }
     PatternService.addPattern("keyword", sourcePattern, instances, pdfFile);
   }
@@ -107,7 +99,7 @@ public class PatternDistinguisher {
         }
       }
     }
-    List<Instance> instances = PatternService.convertToInstanceList(pattern.getSentences());
+    List<Instance> instances = PatternService.convertTextToInstanceList(pattern.getSentences());
     int yesClass = 0;
     for (Instance instance : instances) {
       if (instance.isClazz()) {
@@ -121,7 +113,7 @@ public class PatternDistinguisher {
       return getSimilarityByMachineLearning(instances, document, isKeyword);
     }
     */
-    return getSimilarityByMachineLearning(instances, document, isKeyword);
+    return getSimilarityByMachineLearning(instances, document);
   }
 
   private double getSimilarityByGeometry(List<Instance> instances, List<Sentence> document, boolean[] isKeyword) {
@@ -166,16 +158,46 @@ public class PatternDistinguisher {
     return (double) correctKeyword * 100 / totalKeyword;
   }
 
-  private double getSimilarityByMachineLearning(List<Instance> instances, List<Sentence> document, boolean[] isKeyword) {
-    wekaTest();
-    return 0;
+  private double getSimilarityByMachineLearning(List<Instance> instances, List<Sentence> document) {
+    return getResultMachineLearning(instances, document).getRecall();
   }
 
-  private void wekaTest() {
-    String[] args = {"-t", "/home/luqmanarifin/invoices/2/result.date.arff",
-      "-T", "/home/luqmanarifin/invoices/2/result.date.arff",
-      "-K", "0", "-M", "1.0", "-V", "0.001", "-S", "1"};
+  private Result getResultMachineLearning(List<Instance> instances, List<Sentence> document) {
+    String trainingText = PatternService.convertInstanceListToText(instances);
+    List<Instance> documentInstances = new ArrayList<>();
+    for (Sentence sentence : document) {
+      documentInstances.add(sentence.toInstance());
+    }
+    String testText = PatternService.convertInstanceListToText(documentInstances);
+    Common.writeFile("training.arff", trainingText);
+    Common.writeFile("test.arff", testText);
+    return learningTheModel(trainingText, testText);
+  }
 
+  /**
+   *
+   * @param trainingPath path to trainingPath .arff file
+   * @param testPath path to testPath .arff file
+   * @return boolean class of prediction result
+   */
+  private Result learningTheModel(String trainingPath, String testPath) {
+    String[] instancesArgs = {
+      "-t", trainingPath,
+      "-T", testPath,
+      "-K", "0", "-M", "1.0", "-V", "0.001", "-S", "1",
+      "-classifications", "weka.classifiers.evaluation.output.prediction.CSV"};
+    String rawOutputInstances = getWekaOutput(instancesArgs);
+
+    String[] recallArgs = {
+      "-t", trainingPath,
+      "-T", testPath,
+      "-K", "0", "-M", "1.0", "-V", "0.001", "-S", "1"};
+    String rawOutputRecall = getWekaOutput(recallArgs);
+
+    return null;
+  }
+
+  private String getWekaOutput(String[] args) {
     // Create a stream to hold the output
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     PrintStream ps = new PrintStream(baos);
@@ -184,15 +206,12 @@ public class PatternDistinguisher {
     // Tell Java to use your special stream
     System.setErr(ps);
 
-    System.out.println(args.length);
-    for (String arg : args) System.out.println(arg);
     RandomTree.main(args);
 
     // Put things back
     System.out.flush();
     System.setErr(old);
     // Show what happened
-    System.out.println(baos.toString());
-
+    return baos.toString();
   }
 }

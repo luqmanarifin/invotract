@@ -64,7 +64,12 @@ public class PatternService extends Executor {
     return patterns;
   }
 
-  public static List<Instance> convertToInstanceList(String text) {
+  /**
+   * ARFF file -> list of instance
+   * @param text
+   * @return
+   */
+  public static List<Instance> convertTextToInstanceList(String text) {
     List<Instance> instances = new ArrayList<>();
     Scanner scanner = new Scanner(text);
     while (scanner.hasNextLine()) {
@@ -76,6 +81,19 @@ public class PatternService extends Executor {
       }
     }
     return instances;
+  }
+
+  /**
+   * list of instance -> ARFF file
+   * @param instances
+   * @return
+   */
+  public static String convertInstanceListToText(List<Instance> instances) {
+    String text = "@RELATION invoices\n@ATTRIBUTE x REAL\n@ATTRIBUTE y REAL\n@ATTRIBUTE size REAL\n@ATTRIBUTE class {yes, no}\n@DATA\n";
+    for (Instance instance : instances) {
+      text += instance.toString() + "\n";
+    }
+    return text;
   }
 
   public static List<Pattern> getDatePatterns() {
@@ -112,10 +130,7 @@ public class PatternService extends Executor {
   }
 
   private static void insertPattern(String table, List<Instance> instances, String pdfPath) {
-    String sentences = "@RELATION invoices\n@ATTRIBUTE x REAL\n@ATTRIBUTE y REAL\n@ATTRIBUTE size REAL\n@ATTRIBUTE class {yes, no}\n@DATA\n";
-    for (Instance instance : instances) {
-      sentences += instance.toString() + "\n";
-    }
+    String sentences = convertInstanceListToText(instances);
     String sql = "INSERT INTO \"" + table + "\" (\"id\", \"filePath\", \"sentences\") " +
                   "VALUES (NULL, '" + pdfPath + "', '" + sentences + "')";
     executeQuery(sql);

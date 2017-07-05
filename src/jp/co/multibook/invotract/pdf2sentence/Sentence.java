@@ -1,7 +1,9 @@
 package jp.co.multibook.invotract.pdf2sentence;
 
 import jp.co.multibook.invotract.common.Serializable;
+import jp.co.multibook.invotract.pattern.PatternDistinguisher;
 import jp.co.multibook.invotract.pattern.model.Instance;
+import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
 
 /**
@@ -97,6 +99,19 @@ public class Sentence implements Serializable{
       + Double.toString(size) + ","
       + "\"" + text.replaceAll("\"", "") + "\"";
     return string;
+  }
+
+  public Instance toInstance() {
+    double x = this.getX();
+    double y = this.getY();
+    double size = this.getSize();
+    boolean clazz = false;
+    for (int i = 0; i < PatternDistinguisher.keywords.length && !clazz; i++) {
+      if (StringUtils.containsIgnoreCase(this.getText(), PatternDistinguisher.keywords[i])) {
+        clazz = true;
+      }
+    }
+    return new Instance(x, y, size, clazz);
   }
 
 }
