@@ -38,14 +38,6 @@ Download from this link
 
 Unzip the file. Then add `<directory you unzip the file>/bin` to `$PATH` environment variable. Make sure that binary file `tet` can be executed from any directories.
 
-### Weka
-
-Download Weka from here
-
-    http://www.cs.waikato.ac.nz/ml/weka/downloading.html
-
-Unzip the file. Then add `<directory you unzip the file>/weka-<version>/weka.jar` to `$WEKA_HOME` environment variable. Make sure `echo $WEKA_HOME` show you the correct path to weka.jar file. 
-
 ## Usage
 
 Open this project in Intellij IDEA. Add JAR dependencies from /lib to the project.
