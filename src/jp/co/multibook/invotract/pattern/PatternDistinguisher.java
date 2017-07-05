@@ -6,9 +6,11 @@ import jp.co.multibook.invotract.pattern.model.Pattern;
 import jp.co.multibook.invotract.pattern.service.PatternService;
 import jp.co.multibook.invotract.pdf2sentence.PdfToSentence;
 import jp.co.multibook.invotract.pdf2sentence.Sentence;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import weka.classifiers.trees.RandomTree;
 
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,7 +21,7 @@ import java.util.List;
  */
 public class PatternDistinguisher {
 
-  private final static double similarPercentage = 90;
+  private final static double similarPercentage = 80;
   private final static double fontSizeError = 0.2;
   private final static int keywordLimit = 30;
   private final static String[] keywords = {
@@ -41,9 +43,6 @@ public class PatternDistinguisher {
     List<Pattern> patterns = PatternService.getDatePatterns();
     if (!patterns.isEmpty()) {
       System.out.println("DB connected");
-    } else {
-      System.out.println("Cannot connect to DB");
-      throw new Exception();
     }
   }
 
@@ -85,7 +84,7 @@ public class PatternDistinguisher {
       System.out.println("similarity " + similarityValue + "% with index " + patterns.get(i).getId());
       System.out.printf("");
     }
-    if (index == -1 || best < 90) {
+    if (index == -1 || best < similarPercentage) {
       System.out.println("not found any similar pattern before");
       return null;
     } else {
@@ -115,11 +114,14 @@ public class PatternDistinguisher {
         yesClass++;
       }
     }
+    /*
     if (yesClass < keywordLimit) {
       return getSimilarityByGeometry(instances, document, isKeyword);
     } else {
       return getSimilarityByMachineLearning(instances, document, isKeyword);
     }
+    */
+    return getSimilarityByMachineLearning(instances, document, isKeyword);
   }
 
   private double getSimilarityByGeometry(List<Instance> instances, List<Sentence> document, boolean[] isKeyword) {
@@ -165,6 +167,32 @@ public class PatternDistinguisher {
   }
 
   private double getSimilarityByMachineLearning(List<Instance> instances, List<Sentence> document, boolean[] isKeyword) {
+    wekaTest();
     return 0;
+  }
+
+  private void wekaTest() {
+    String[] args = {"-t", "/home/luqmanarifin/invoices/2/result.date.arff",
+      "-T", "/home/luqmanarifin/invoices/2/result.date.arff",
+      "-K", "0", "-M", "1.0", "-V", "0.001", "-S", "1"};
+
+    // Create a stream to hold the output
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    PrintStream ps = new PrintStream(baos);
+    // IMPORTANT: Save the old System.out!
+    PrintStream old = System.err;
+    // Tell Java to use your special stream
+    System.setErr(ps);
+
+    System.out.println(args.length);
+    for (String arg : args) System.out.println(arg);
+    RandomTree.main(args);
+
+    // Put things back
+    System.out.flush();
+    System.setErr(old);
+    // Show what happened
+    System.out.println(baos.toString());
+
   }
 }
