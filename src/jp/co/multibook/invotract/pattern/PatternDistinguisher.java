@@ -7,12 +7,15 @@ import jp.co.multibook.invotract.pattern.model.Result;
 import jp.co.multibook.invotract.pattern.service.PatternService;
 import jp.co.multibook.invotract.pdf2sentence.PdfToSentence;
 import jp.co.multibook.invotract.pdf2sentence.Sentence;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import weka.classifiers.trees.RandomTree;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * Created by luqmanarifin on 7/3/17.

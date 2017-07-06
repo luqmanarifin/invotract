@@ -4,7 +4,6 @@ import jp.co.multibook.invotract.pattern.database.ConnectionSingleton;
 import jp.co.multibook.invotract.pattern.database.Executor;
 import jp.co.multibook.invotract.pattern.model.Instance;
 import jp.co.multibook.invotract.pattern.model.Pattern;
-import jp.co.multibook.invotract.pdf2sentence.Sentence;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
