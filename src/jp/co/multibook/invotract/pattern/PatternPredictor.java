@@ -77,6 +77,7 @@ public class PatternPredictor {
     for (int i = 0; i < rowSentences.size(); i++) {
       int j = i;
       List<Sentence> lineSentences = new ArrayList<>();
+      lineSentences.add(rowSentences.get(j));
       while (j + 1 < rowSentences.size()
         && Math.abs(rowSentences.get(j).getY() - rowSentences.get(j + 1).getY())
         < Common.PIXEL_TOLERANCE) {
@@ -89,6 +90,7 @@ public class PatternPredictor {
       for (Sentence sentence : lineSentences) {
         line += sentence.getText() + " ";
       }
+
       results.add(Extractor.getItem(line));
     }
     return results;

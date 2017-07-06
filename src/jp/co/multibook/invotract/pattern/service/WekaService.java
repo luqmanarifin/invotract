@@ -7,7 +7,6 @@ import jp.co.multibook.invotract.pdf2sentence.Sentence;
 import weka.classifiers.trees.RandomTree;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,14 +46,6 @@ public class WekaService {
    * @return boolean class of prediction result
    */
   private static Result learningTheModel(String trainingPath, String testPath) {
-    String trainingText = "";
-    String testText = "";
-    try {
-      trainingText = Common.readFile(trainingPath);
-      testText = Common.readFile(testPath);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
     String[] recallArgs = {
       "-t", trainingPath,
       "-T", testPath,
@@ -69,7 +60,8 @@ public class WekaService {
       String[] token = line.split("\\s+");
       if (token.length == 5) {
         if (token[0].equals("Total") && token[1].equals("Number")
-          && token[2].equals("of") && token[3].equals("Instances")) {
+          && token[2].equals("of") && token[3].equals("Instances")
+          && n == -1) {
           n = Integer.parseInt(token[4]);
         }
       }
