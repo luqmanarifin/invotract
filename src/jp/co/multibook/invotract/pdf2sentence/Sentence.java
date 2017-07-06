@@ -1,10 +1,13 @@
 package jp.co.multibook.invotract.pdf2sentence;
 
+import jp.co.multibook.invotract.common.Common;
 import jp.co.multibook.invotract.common.Serializable;
 import jp.co.multibook.invotract.pattern.PatternDistinguisher;
 import jp.co.multibook.invotract.pattern.model.Instance;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
+
+import java.util.List;
 
 /**
  * Created by luqmanarifin on 6/29/17.
@@ -101,7 +104,7 @@ public class Sentence implements Serializable{
     return string;
   }
 
-  public Instance toInstance() {
+  public Instance toKeywordInstance() {
     double x = this.getX();
     double y = this.getY();
     double size = this.getSize();
@@ -113,5 +116,82 @@ public class Sentence implements Serializable{
     }
     return new Instance(x, y, size, clazz);
   }
+
+  public Instance toDateInstance(String date) {
+    double x = this.getX();
+    double y = this.getY();
+    double size = this.getSize();
+    boolean clazz = containsDate(this.getText(), date);
+    return new Instance(x, y, size, clazz);
+  }
+
+  public Instance toCompanyInstance(String company) {
+    double x = this.getX();
+    double y = this.getY();
+    double size = this.getSize();
+    boolean clazz = containsCompany(this.getText(), company);
+    return new Instance(x, y, size, clazz);
+  }
+
+  public Instance toTaxInstance(String tax) {
+    double x = this.getX();
+    double y = this.getY();
+    double size = this.getSize();
+    boolean clazz = containsTax(this.getText(), tax);
+    return new Instance(x, y, size, clazz);
+  }
+
+  public Instance toCorrectInstance() {
+    double x = this.getX();
+    double y = this.getY();
+    double size = this.getSize();
+    boolean clazz = true;
+    return new Instance(x, y, size, clazz);
+  }
+
+  /**
+   *
+   * @param instances list of instance that have keyword at dictionaries, should be Y-sorted
+   * @return
+   */
+  public Instance toRowInstance(List<Instance> instances) {
+    double x = this.getX();
+    double y = this.getY();
+    double size = this.getSize();
+    boolean clazz = inSameRow(instances);
+    return new Instance(x, y, size, clazz);
+  }
+
+  private boolean containsDate(String text, String correctDate) {
+    return text.equals(correctDate);
+  }
+
+  private boolean containsCompany(String text, String correctCompany) {
+    return text.equals(correctCompany);
+  }
+
+  private boolean containsTax(String text, String correctTax) {
+    return text.equals(correctTax);
+  }
+
+  /**
+   *
+   * @param instances sorted by Y coordinate
+   * @return
+   */
+  private boolean inSameRow(List<Instance> instances) {
+    int l = 0, r = instances.size() - 1;
+    while (l < r) {
+      int mid = (l + r) / 2;
+      if (instances.get(mid).getY() < this.y) {
+        l = mid + 1;
+      } else {
+        r = mid;
+      }
+    }
+    return 0 <= l && l < instances.size()
+      && Math.abs(instances.get(l).getY() - this.y) < Common.PIXEL_TOLERANCE;
+  }
+
 
 }

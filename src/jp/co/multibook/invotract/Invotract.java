@@ -3,7 +3,9 @@ package jp.co.multibook.invotract;
 import jp.co.multibook.invotract.common.Common;
 import jp.co.multibook.invotract.extractor.Extractor;
 import jp.co.multibook.invotract.image2text.ImageToText;
-import jp.co.multibook.invotract.pattern.PatternDistinguisher;
+import jp.co.multibook.invotract.pattern.PatternPoster;
+import jp.co.multibook.invotract.pattern.model.CorrectData;
+import jp.co.multibook.invotract.pattern.model.Result;
 import jp.co.multibook.invotract.pdf2image.PdfToImage;
 import jp.co.multibook.invotract.pdf2sentence.PdfToSentence;
 
@@ -20,10 +22,18 @@ public class Invotract {
       System.out.println("Usage: java -jar invotract.jar <PDF file>");
       return;
     }
-    PatternDistinguisher patternDistinguisher = new PatternDistinguisher();
     System.out.println(args.length);
     for (String arg : args) System.out.println(arg);
-    patternDistinguisher.addPattern(args[0]);
+    PatternPoster patternPoster = new PatternPoster();
+    // pdf file path - date - company - tax - rows
+    String date = args[1];
+    String company = args[2];
+    String tax = args[3];
+    List<String> rows = new ArrayList<>();
+    for (int i = 4; i < args.length; i++) {
+      rows.add(args[i]);
+    }
+    patternPoster.addPattern(args[0], new CorrectData(date, company, tax, rows));
   }
 
   public static void pdfToJson(String[] args) {
