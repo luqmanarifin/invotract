@@ -33,11 +33,12 @@ public class PatternDistinguisher {
   };
 
   public PatternDistinguisher () throws Exception {
-    System.out.println("testing DB connection");
+    System.out.println("testing DB connection...");
     List<Pattern> patterns = PatternService.getDatePatterns();
     if (!patterns.isEmpty()) {
-      System.out.println("DB connected");
+      System.out.println("DB connected!");
     }
+    System.out.println();
   }
 
   /**

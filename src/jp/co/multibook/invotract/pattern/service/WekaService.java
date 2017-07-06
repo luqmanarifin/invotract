@@ -7,6 +7,7 @@ import jp.co.multibook.invotract.pdf2sentence.Sentence;
 import weka.classifiers.trees.RandomTree;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,7 @@ public class WekaService {
     return learningTheModel("training.arff", "test.arff");
   }
 
-  public static Result getResult(List<Instance> trainingInstances, List<Instance> testInstances) {
-    String trainingText = PatternService.convertInstanceListToText(trainingInstances);
+  public static Result getResult(String trainingText, List<Instance> testInstances) {
     String testText = PatternService.convertInstanceListToText(testInstances);
     Common.writeFile("training.arff", trainingText);
     Common.writeFile("test.arff", testText);
@@ -47,6 +47,14 @@ public class WekaService {
    * @return boolean class of prediction result
    */
   private static Result learningTheModel(String trainingPath, String testPath) {
+    String trainingText = "";
+    String testText = "";
+    try {
+      trainingText = Common.readFile(trainingPath);
+      testText = Common.readFile(testPath);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     String[] recallArgs = {
       "-t", trainingPath,
       "-T", testPath,

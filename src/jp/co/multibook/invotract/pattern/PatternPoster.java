@@ -1,5 +1,6 @@
 package jp.co.multibook.invotract.pattern;
 
+import jp.co.multibook.invotract.extractor.Item;
 import jp.co.multibook.invotract.pattern.model.CorrectData;
 import jp.co.multibook.invotract.pattern.model.Instance;
 import jp.co.multibook.invotract.pattern.model.Pattern;
@@ -73,7 +74,12 @@ public class PatternPoster {
     return instances;
   }
 
-  private List<Instance> toRowInstances(List<Sentence> sentences, List<String> dictionaries) {
+  private List<Instance> toRowInstances(List<Sentence> sentences, List<Item> items) {
+    List<String> dictionaries = new ArrayList<>();
+    for (Item item : items) {
+      dictionaries.add(item.getName());
+    }
+
     List<Instance> correctInstances = new ArrayList<>();
     for (Sentence sentence : sentences) {
       if (dictionaries.contains(sentence.getText())) {

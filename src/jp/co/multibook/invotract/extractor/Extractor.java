@@ -1,6 +1,7 @@
 package jp.co.multibook.invotract.extractor;
 
 import jp.co.multibook.invotract.common.Common;
+import jp.co.multibook.invotract.pattern.model.CorrectData;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.javatuples.Pair;
@@ -144,7 +145,7 @@ public class Extractor {
     return "0";
   }
 
-  private boolean isPureNumber(String word) {
+  private static boolean isPureNumber(String word) {
     for (int i = 0; i < word.length(); i++) {
       if (!Character.isDigit(word.charAt(i))) {
         return false;
@@ -153,7 +154,7 @@ public class Extractor {
     return true;
   }
 
-  private long convertToAmount(String word) {
+  private static long convertToAmount(String word) {
     word = word.split("\\.")[0];
     long number = 0;
     for (int i = 0; i < word.length(); i++) {
@@ -164,7 +165,7 @@ public class Extractor {
     return number;
   }
 
-  private boolean isProbableAmount(String word) {
+  private static boolean isProbableAmount(String word) {
     for (int i = 0; i < word.length(); i++) {
       char c = word.charAt(i);
       if (Character.isDigit(c)) continue;
@@ -200,7 +201,7 @@ public class Extractor {
       && counterNotAmount > 0;
   }
 
-  private Pair<Integer, Integer> getLongestFalseRange(boolean[] a) {
+  private static Pair<Integer, Integer> getLongestFalseRange(boolean[] a) {
     int beg = -1, end = -1, best = 0;
     int last = -1;
     for (int i = 0; i < a.length; i++) {
@@ -216,7 +217,7 @@ public class Extractor {
     return new Pair<>(beg, end);
   }
 
-  private Item getItem(String line) {
+  public static Item getItem(String line) {
     String[] tokens = line.split("\\s");
     boolean[] isAmount = new boolean[tokens.length];
 

@@ -7,12 +7,13 @@ import jp.co.multibook.invotract.pattern.model.Instance;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by luqmanarifin on 6/29/17.
  */
-public class Sentence implements Serializable{
+public class Sentence implements Serializable, Comparable<Sentence> {
 
   // x-y location and size of the font
   private double x;
@@ -104,6 +105,14 @@ public class Sentence implements Serializable{
     return string;
   }
 
+  public Instance toUnknownInstance() {
+    double x = this.getX();
+    double y = this.getY();
+    double size = this.getSize();
+    int clazz = 2;
+    return new Instance(x, y, size, clazz);
+  }
+
   public Instance toKeywordInstance() {
     double x = this.getX();
     double y = this.getY();
@@ -193,5 +202,39 @@ public class Sentence implements Serializable{
       && Math.abs(instances.get(l).getY() - this.y) < Common.PIXEL_TOLERANCE;
   }
 
+  public int compareTo(Sentence compareInstance) {
+    return 0;
+  }
+
+  public static Comparator<Sentence> compareByY = new Comparator<Sentence>() {
+
+    public int compare(Sentence instance1, Sentence instance2) {
+
+      Double value1 = instance1.getY();
+      Double value2 = instance2.getY();
+
+      if (Math.abs(value1 - value2) < Common.PIXEL_TOLERANCE) {
+        Double x1 = instance1.getX();
+        Double x2 = instance2.getX();
+
+        return x1.compareTo(x2);
+      }
+
+      //ascending order
+      return value1.compareTo(value2);
+    }
+
+  };
+
+  public static Comparator<Sentence> compareByX = new Comparator<Sentence>() {
+
+    public int compare(Sentence instance1, Sentence instance2) {
+      Double x1 = instance1.getX();
+      Double x2 = instance2.getX();
+
+      return x1.compareTo(x2);
+    }
+
+  };
 
 }

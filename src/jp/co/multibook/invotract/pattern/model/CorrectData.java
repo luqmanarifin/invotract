@@ -1,5 +1,7 @@
 package jp.co.multibook.invotract.pattern.model;
 
+import jp.co.multibook.invotract.extractor.Item;
+
 import java.util.List;
 
 /**
@@ -10,9 +12,9 @@ public class CorrectData {
   private String date;
   private String company;
   private String tax;
-  private List<String> rows;
+  private List<Item> rows;
 
-  public CorrectData(String date, String company, String tax, List<String> rows) {
+  public CorrectData(String date, String company, String tax, List<Item> rows) {
     this.date = date;
     this.company = company;
     this.tax = tax;
@@ -43,11 +45,11 @@ public class CorrectData {
     this.tax = tax;
   }
 
-  public List<String> getRows() {
+  public List<Item> getRows() {
     return rows;
   }
 
-  public void setRows(List<String> rows) {
+  public void setRows(List<Item> rows) {
     this.rows = rows;
   }
 }
