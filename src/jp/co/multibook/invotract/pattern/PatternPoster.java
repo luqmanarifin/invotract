@@ -22,7 +22,11 @@ public class PatternPoster {
   public void addPattern(String pdfFile, CorrectData correctData) throws Exception {
     List<Sentence> sentences = PdfToSentence.getSentenceList(pdfFile);
     PatternDistinguisher patternDistinguisher = new PatternDistinguisher();
-    Pattern sourcePattern = patternDistinguisher.getSimilarPattern(sentences);
+    Pattern sourceKeyword = patternDistinguisher.getSimilarPattern(sentences);
+    Pattern sourceDate = (sourceKeyword == null? null : PatternService.getPattern("date", sourceKeyword.getId()));
+    Pattern sourceCompany = (sourceKeyword == null? null : PatternService.getPattern("company", sourceKeyword.getId()));
+    Pattern sourceTax = (sourceKeyword == null? null : PatternService.getPattern("tax", sourceKeyword.getId()));
+    Pattern sourceRow = (sourceKeyword == null? null : PatternService.getPattern("row", sourceKeyword.getId()));
 
     List<Instance> keywordInstances = toKeywordInstances(sentences);
     List<Instance> dateInstances = toDateInstances(sentences, correctData.getDate());
@@ -30,11 +34,11 @@ public class PatternPoster {
     List<Instance> taxInstances = toTaxInstances(sentences, correctData.getTax());
     List<Instance> rowInstances = toRowInstances(sentences, correctData.getRows());
 
-    PatternService.addPattern("keyword", sourcePattern, keywordInstances, pdfFile);
-    PatternService.addPattern("date", sourcePattern, dateInstances, pdfFile);
-    PatternService.addPattern("company", sourcePattern, companyInstances, pdfFile);
-    PatternService.addPattern("tax", sourcePattern, taxInstances, pdfFile);
-    PatternService.addPattern("row", sourcePattern, rowInstances, pdfFile);
+    PatternService.addPattern("keyword", sourceKeyword, keywordInstances, pdfFile);
+    PatternService.addPattern("date", sourceDate, dateInstances, pdfFile);
+    PatternService.addPattern("company", sourceCompany, companyInstances, pdfFile);
+    PatternService.addPattern("tax", sourceTax, taxInstances, pdfFile);
+    PatternService.addPattern("row", sourceRow, rowInstances, pdfFile);
   }
 
   private List<Instance> toKeywordInstances(List<Sentence> sentences) {

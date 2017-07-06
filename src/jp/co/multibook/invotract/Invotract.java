@@ -24,6 +24,10 @@ public class Invotract {
     }
     System.out.println(args.length);
     for (String arg : args) System.out.println(arg);
+    postTrainingPattern(args);
+  }
+
+  public static void postTrainingPattern(String[] args) throws Exception {
     PatternPoster patternPoster = new PatternPoster();
     // pdf file path - date - company - tax - rows
     String date = args[1];

@@ -9,6 +9,8 @@ import java.sql.SQLException;
  */
 public class ConnectionSingleton extends Executor {
 
+  private static String url = "jdbc:sqlite:/var/www/html/phpliteadmin/invotract.db";
+
   public ConnectionSingleton() {
 
   }
@@ -16,22 +18,17 @@ public class ConnectionSingleton extends Executor {
   private static Connection connection = null;
 
   public static Connection getConnection() {
-    System.out.println("getting connection..");
-    String url = "jdbc:sqlite:/var/www/html/phpliteadmin/invotract.db";
     try {
       if (connection == null) {
-        System.out.println("not connected yet.");
         connection = DriverManager.getConnection(url);
         connection.setAutoCommit(false);
         setupDatabase();
       } else if (connection.isClosed()) {
-        System.out.println("connection lost. reconnecting...");
         connection = DriverManager.getConnection(url);
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    System.out.println("connected!");
     return connection;
   }
 
@@ -42,6 +39,7 @@ public class ConnectionSingleton extends Executor {
     createTaxTable();
     createRowTable();
     createKeywordTable();
+    System.out.println();
   }
 
   private static void createTable(String name) {

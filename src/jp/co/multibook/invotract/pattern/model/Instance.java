@@ -12,6 +12,11 @@ public class Instance implements Comparable<Instance> {
   private double size;
   private boolean clazz;
 
+  public Instance() {
+
+  }
+
+
   public Instance(double x, double y, double size, boolean clazz) {
     this.x = x;
     this.y = y;
