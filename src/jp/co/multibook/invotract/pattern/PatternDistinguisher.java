@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class PatternDistinguisher {
 
-  private final static double similarPercentage = 80; // minimum value of "recall", so two patterns can be considered similar
+  private final static double similarPercentage = 95; // minimum value of "recall", so two patterns can be considered similar
   private final static double fontSizeError = 0.2;    // tolerance of font size difference
   private final static int keywordLimit = 10;         // limit for decision -> using geometry/ML approach
   public final static String[] keywords = {

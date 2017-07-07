@@ -1,7 +1,6 @@
 package jp.co.multibook.invotract.extractor;
 
 import jp.co.multibook.invotract.common.Common;
-import jp.co.multibook.invotract.pattern.model.CorrectData;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.javatuples.Pair;
