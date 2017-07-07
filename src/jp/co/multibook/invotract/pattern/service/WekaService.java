@@ -52,7 +52,8 @@ public class WekaService {
       "-K", "0", "-M", "1.0", "-V", "0.001", "-S", "1"};
     String rawOutputRecall = getWekaOutput(recallArgs);
     Scanner scanner = new Scanner(rawOutputRecall);
-    int n = -1;
+    int totalNumberOfInstances = -1;
+    int ignoredClassUnknownInstances = -1;
     double recall = -1;
     while (scanner.hasNextLine()) {
       String line = scanner.nextLine();
@@ -60,9 +61,12 @@ public class WekaService {
       String[] token = line.split("\\s+");
       if (token.length == 5) {
         if (token[0].equals("Total") && token[1].equals("Number")
-          && token[2].equals("of") && token[3].equals("Instances")
-          && n == -1) {
-          n = Integer.parseInt(token[4]);
+          && token[2].equals("of") && token[3].equals("Instances")) {
+          totalNumberOfInstances = Integer.parseInt(token[4]);
+        }
+        if (token[0].equals("Ignored") && token[1].equals("Class")
+          && token[2].equals("Unknown") && token[3].equals("Instances")) {
+          ignoredClassUnknownInstances = Integer.parseInt(token[4]);
         }
       }
       if (token.length == 9) {
@@ -71,6 +75,7 @@ public class WekaService {
         }
       }
     }
+    int n = totalNumberOfInstances + ignoredClassUnknownInstances;
 
     String[] instancesArgs = {
       "-t", trainingPath,
