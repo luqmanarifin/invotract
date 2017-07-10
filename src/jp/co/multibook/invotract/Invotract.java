@@ -22,7 +22,7 @@ public class Invotract {
     if (args.length == 0) {
       System.out.println("Usage: java -jar invotract.jar <predict/post> <PDF file> [commands]");
       System.out.println();
-      System.out.println("If you want to train the ML model. Add these to commands.");
+      System.out.println("If you want to post correct data. Add these to commands.");
       System.out.println("<correct date> <correct company> <correct tax> <rows 1st> <rows 2nd> ..");
       return;
     }
