@@ -172,11 +172,15 @@ public class Sentence implements Serializable, Comparable<Sentence> {
   }
 
   private boolean containsDate(String correctDate) {
-    return text.equals(correctDate);
+    return text.contains(correctDate);
   }
 
   private boolean containsCompany(String correctCompany) {
-    return text.contains(correctCompany);
+    if (text.length() <= 5) {
+      return text.equals(correctCompany);
+    } else {
+      return StringUtils.containsIgnoreCase(text, correctCompany);
+    }
   }
 
   private boolean containsTax(String correctTax) {
