@@ -246,9 +246,6 @@ public class Extractor {
         break;
       }
     }
-    if (quantity != -1) {
-      sbName.append(" [QTY: " + quantity + "]");
-    }
     String name = sbName.toString();
     return new Item(name, biggestAmount);
   }

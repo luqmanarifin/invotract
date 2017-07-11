@@ -93,6 +93,7 @@ public class PatternPredictor {
 
       results.add(Extractor.getItem(line));
     }
+    Collections.reverse(results);
     return results;
   }
 
