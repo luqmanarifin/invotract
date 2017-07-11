@@ -75,15 +75,13 @@ public class PatternPoster {
   }
 
   private List<Instance> toRowInstances(List<Sentence> sentences, List<Item> items) {
-    List<String> dictionaries = new ArrayList<>();
-    for (Item item : items) {
-      dictionaries.add(item.getName());
-    }
-
     List<Instance> correctInstances = new ArrayList<>();
     for (Sentence sentence : sentences) {
-      if (dictionaries.contains(sentence.getText())) {
-        correctInstances.add(sentence.toCorrectInstance());
+      for (Item item : items) {
+        if (sentence.containsRow(item.getName())) {
+          correctInstances.add(sentence.toCorrectInstance());
+          break;
+        }
       }
     }
     Collections.sort(correctInstances, Instance.compareByY);

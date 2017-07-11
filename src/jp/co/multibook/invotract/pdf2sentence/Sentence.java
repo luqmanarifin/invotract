@@ -130,7 +130,7 @@ public class Sentence implements Serializable, Comparable<Sentence> {
     double x = this.getX();
     double y = this.getY();
     double size = this.getSize();
-    boolean clazz = containsDate(this.getText(), date);
+    boolean clazz = this.containsDate(date);
     return new Instance(x, y, size, clazz);
   }
 
@@ -138,7 +138,7 @@ public class Sentence implements Serializable, Comparable<Sentence> {
     double x = this.getX();
     double y = this.getY();
     double size = this.getSize();
-    boolean clazz = containsCompany(this.getText(), company);
+    boolean clazz = this.containsCompany(company);
     return new Instance(x, y, size, clazz);
   }
 
@@ -146,7 +146,7 @@ public class Sentence implements Serializable, Comparable<Sentence> {
     double x = this.getX();
     double y = this.getY();
     double size = this.getSize();
-    boolean clazz = containsTax(this.getText(), tax);
+    boolean clazz = this.containsTax(tax);
     return new Instance(x, y, size, clazz);
   }
 
@@ -171,16 +171,24 @@ public class Sentence implements Serializable, Comparable<Sentence> {
     return new Instance(x, y, size, clazz);
   }
 
-  private boolean containsDate(String text, String correctDate) {
+  private boolean containsDate(String correctDate) {
     return text.equals(correctDate);
   }
 
-  private boolean containsCompany(String text, String correctCompany) {
-    return text.equals(correctCompany);
+  private boolean containsCompany(String correctCompany) {
+    return text.contains(correctCompany);
   }
 
-  private boolean containsTax(String text, String correctTax) {
-    return text.equals(correctTax);
+  private boolean containsTax(String correctTax) {
+    return text.contains(correctTax);
+  }
+
+  public boolean containsRow(String correctRow) {
+    if (correctRow.length() <= 3) {
+      return text.equals(correctRow);
+    } else {
+      return StringUtils.containsIgnoreCase(text, correctRow);
+    }
   }
 
   /**
