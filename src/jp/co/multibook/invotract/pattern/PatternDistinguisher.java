@@ -33,12 +33,12 @@ public class PatternDistinguisher {
   };
 
   public PatternDistinguisher () throws Exception {
-    System.out.println("testing DB connection...");
+    //System.out.println("testing DB connection...");
     List<Pattern> patterns = PatternService.getDatePatterns();
     if (!patterns.isEmpty()) {
-      System.out.println("DB connected!");
+      //System.out.println("DB connected!");
     }
-    System.out.println();
+    //System.out.println();
   }
 
   /**
@@ -50,17 +50,17 @@ public class PatternDistinguisher {
   public Pattern getSimilarPattern(List<Sentence> document) {
     List<Pattern> patterns = PatternService.getKeywordPatterns();
     boolean[] isKeyword = new boolean[document.size()];
-    System.out.println("KEYWORD OF DOCUMENT:");
+    //System.out.println("KEYWORD OF DOCUMENT:");
     for (int i = 0; i < document.size(); i++) {
       for (int j = 0; j < keywords.length; j++) {
         isKeyword[i] = StringUtils.containsIgnoreCase(document.get(i).getText(), keywords[j]);
         if (isKeyword[i]) {
-          System.out.println(document.get(i).getText());
+          //System.out.println(document.get(i).getText());
           break;
         }
       }
     }
-    System.out.println();
+    //System.out.println();
 
     double best = -1;
     int index = -1;
@@ -70,20 +70,20 @@ public class PatternDistinguisher {
         best = similarityValue;
         index = i;
       }
-      System.out.println("similarity " + similarityValue + "% with index " + patterns.get(i).getId());
-      System.out.println();
+      //System.out.println("similarity " + similarityValue + "% with index " + patterns.get(i).getId());
+      //System.out.println();
     }
-    System.out.println("RESULT OF FINDING SIMILAR PATTERN:");
+    //System.out.println("RESULT OF FINDING SIMILAR PATTERN:");
     if (index == -1 || best < similarPercentage) {
-      System.out.println("not found any similar pattern before");
-      System.out.println("create a new pattern on database");
-      System.out.println();
+      //System.out.println("not found any similar pattern before");
+      //System.out.println("create a new pattern on database");
+      //System.out.println();
       return null;
     } else {
-      System.out.println("similar with pattern index: " + patterns.get(index).getId());
-      System.out.println("pdf path: " + patterns.get(index).getFilePath());
-      System.out.println("similarity percentage: " + best);
-      System.out.println();
+      //System.out.println("similar with pattern index: " + patterns.get(index).getId());
+      //System.out.println("pdf path: " + patterns.get(index).getFilePath());
+      //System.out.println("similarity percentage: " + best);
+      //System.out.println();
       return patterns.get(index);
     }
   }
@@ -97,10 +97,10 @@ public class PatternDistinguisher {
       }
     }
     if (yesClass < keywordLimit) {
-      System.out.println("finding similarity using geometry approach");
+      //System.out.println("finding similarity using geometry approach");
       return getSimilarityByGeometry(instances, document, isKeyword);
     } else {
-      System.out.println("finding similarity using machine learning approach");
+      //System.out.println("finding similarity using machine learning approach");
       return getSimilarityByMachineLearning(instances, document);
     }
   }
@@ -143,7 +143,7 @@ public class PatternDistinguisher {
         }
       }
     }
-    System.out.println(correctKeyword + "/" + totalKeyword + " keywords are matching");
+    //System.out.println(correctKeyword + "/" + totalKeyword + " keywords are matching");
     return (double) correctKeyword * 100 / totalKeyword;
   }
 

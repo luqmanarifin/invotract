@@ -26,8 +26,8 @@ public class Invotract {
       System.out.println("<correct date> <correct company> <correct tax> <rows 1st> <rows 2nd> ..");
       return;
     }
-    System.out.println(args.length);
-    for (String arg : args) System.out.println(arg);
+    //System.out.println(args.length);
+    //for (String arg : args) System.out.println(arg);
     if (args[0].equals("predict")) {
       predict(args);
     } else if (args[0].equals("post")) {
@@ -41,6 +41,8 @@ public class Invotract {
     PatternPredictor patternPredictor = new PatternPredictor();
     String pdfPath = args[1];
     CorrectData result = patternPredictor.getPrediction(pdfPath);
+    System.out.println(result.serialize());
+    /*
     System.out.println("date: " + result.getDate());
     System.out.println("company: " + result.getCompany());
     System.out.println("tax: " + result.getTax());
@@ -48,6 +50,7 @@ public class Invotract {
     for (Item item : result.getRows()) {
       System.out.println("\t" + item.getAmount() + "\t" + item.getName());
     }
+    */
   }
 
   private static void postTrainingPattern(String[] args) throws Exception {

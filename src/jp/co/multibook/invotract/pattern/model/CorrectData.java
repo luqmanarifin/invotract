@@ -1,13 +1,16 @@
 package jp.co.multibook.invotract.pattern.model;
 
+import jp.co.multibook.invotract.common.Serializable;
 import jp.co.multibook.invotract.extractor.Item;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.util.List;
 
 /**
  * Created by luqmanarifin on 7/6/17.
  */
-public class CorrectData {
+public class CorrectData implements Serializable {
 
   private String date;
   private String company;
@@ -51,5 +54,24 @@ public class CorrectData {
 
   public void setRows(List<Item> rows) {
     this.rows = rows;
+  }
+
+  @Override
+  public JSONObject serialize() {
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.put("date", date);
+    jsonObject.put("company", company);
+    jsonObject.put("tax", tax);
+    JSONArray rowsJsonArray = new JSONArray();
+    for (Item item : rows) {
+      rowsJsonArray.add(item.serialize());
+    }
+    jsonObject.put("rows", rowsJsonArray);
+    return jsonObject;
+  }
+
+  @Override
+  public void unserialize(JSONObject json) {
+
   }
 }

@@ -43,7 +43,7 @@ public class PdfToSentence {
    * @return path to the result XML file
    */
   private static String getXmlOcr(String filePath) {
-    System.out.println("get xml ocr");
+    //System.out.println("get xml ocr");
 
     String name = FilenameUtils.removeExtension(filePath) + ".tetml";
 
@@ -67,7 +67,7 @@ public class PdfToSentence {
    * one line per sentence
    */
   private static List<Sentence> extract(String xmlPath) {
-    System.out.println("extract " + xmlPath);
+    //System.out.println("extract " + xmlPath);
     List<Sentence> results = new ArrayList<>();
 
     File file = new File(xmlPath);
@@ -80,17 +80,17 @@ public class PdfToSentence {
     }
 
     List<Element> pages = document.getRootElement().element("Document").element("Pages").elements("Page");
-    System.out.println(pages.size() + " pages found!");
+    //System.out.println(pages.size() + " pages found!");
     for (Element page : pages) {
       page = page.element("Content");
       List<Element> paras = page.elements("Para");
-      System.out.println(paras.size() + " direct para found!");
+      //System.out.println(paras.size() + " direct para found!");
       for (Element para : paras) {
         List<Sentence> temp = getWordsFromPara(para);
         results.addAll(temp);
       }
       List<Element> tables = page.elements("Table");
-      System.out.println(tables.size() + " table found!");
+      //System.out.println(tables.size() + " table found!");
       for (Element table : tables) {
         List<Element> rows = table.elements("Row");
         for (Element row : rows) {

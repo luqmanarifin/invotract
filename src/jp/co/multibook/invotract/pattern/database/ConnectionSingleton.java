@@ -33,13 +33,13 @@ public class ConnectionSingleton extends Executor {
   }
 
   private static void setupDatabase() {
-    System.out.println("setuping database, creating tables");
+    //System.out.println("setuping database, creating tables");
     createDateTable();
     createCompanyTable();
     createTaxTable();
     createRowTable();
     createKeywordTable();
-    System.out.println();
+    //System.out.println();
   }
 
   private static void createTable(String name) {
@@ -49,7 +49,7 @@ public class ConnectionSingleton extends Executor {
       + "	sentences text NOT NULL\n"
       + ");";
     executeQuery(sql);
-    System.out.println(name + " table created!");
+    //System.out.println(name + " table created!");
   }
 
   private static void createDateTable() {
