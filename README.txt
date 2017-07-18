@@ -17,7 +17,7 @@ Change directory to /var/www/html/phpliteadmin
 If there is no existing directory, create one. 
 
 Create database with name invotract.db ON THAT DIRECTORY:
-sudo sqlite invotract.db
+sudo sqlite3 invotract.db
 
 Make this directory and the database accessible for everyone
 sudo chmod 777 invotract.db
@@ -26,6 +26,18 @@ sudo chmod 777 ../phpliteadmin
 
 3. Install PHPLiteAdmin for easier DB management (Optional)
 
+sudo apt-get install php7.0-sqlite3
 
-. Run the project
+Download newest PHPLiteAdmin from here
+https://bitbucket.org/phpliteadmin/public/downloads/
+
+Put the phpliteadmin.php file into /var/www/html/phpmyadmin directory.
+
+Install Apache2 server
+sudo apt-get install apache2
+
+Install PHP 7.0
+sudo apt install php7.0 libapache2-mod-php
+
+4. Run the project
 - Run the project using `java -jar invotract.jar`
