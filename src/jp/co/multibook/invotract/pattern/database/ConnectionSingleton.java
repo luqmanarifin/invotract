@@ -22,7 +22,6 @@ public class ConnectionSingleton extends Executor {
       if (connection == null) {
         DriverManager.registerDriver(new org.sqlite.JDBC());
         connection = DriverManager.getConnection(url);
-        connection.setAutoCommit(false);
         setupDatabase();
       } else if (connection.isClosed()) {
         connection = DriverManager.getConnection(url);
