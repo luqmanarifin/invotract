@@ -17,3 +17,4 @@ src/META-INF
 */*.arff
 data/
 invotract.db
+invotract.jar
