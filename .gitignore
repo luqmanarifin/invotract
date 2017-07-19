@@ -17,6 +17,7 @@ src/META-INF
 */*.arff
 data/
 invotract.db
+*.zip
 
 # Except
 !README.txt
