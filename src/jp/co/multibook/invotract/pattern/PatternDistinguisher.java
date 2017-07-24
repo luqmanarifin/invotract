@@ -29,7 +29,17 @@ public class PatternDistinguisher {
     "currency",
     "quantity",
     "item",
-    "unit"
+    "unit",
+    "請求書",
+    "日付",
+    "数量",
+    "内容説明",
+    "価格",
+    "支払",
+    "通貨",
+    "数量",
+    "商品",
+    "単位"
   };
 
   public PatternDistinguisher () throws Exception {

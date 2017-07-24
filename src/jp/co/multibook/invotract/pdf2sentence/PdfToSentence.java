@@ -46,10 +46,11 @@ public class PdfToSentence {
     //System.out.println("get xml ocr");
 
     String name = FilenameUtils.removeExtension(filePath) + ".tetml";
+    String cmap = System.getenv("CMAP");
 
     Process process = null;
     try {
-      process = new ProcessBuilder("tesseract", "--outfile", name, "--tetml", "wordplus", filePath).start();
+      process = new ProcessBuilder("tesseract", "--searchpath", cmap, "--outfile", name, "--tetml", "wordplus", filePath).start();
       process.waitFor();
     } catch (IOException e) {
       e.printStackTrace();
