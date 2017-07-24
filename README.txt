@@ -9,7 +9,18 @@
 Make sure `tesseract` command is able to be executed from any directory.
 
 
-2. Install SQLite for database
+
+2. Add <Invotract Path>/lib/resource/cmap into $CMAP environment variable.
+
+- Add this path into `/etc/environment`, then apply the change with
+`source /etc/environment`
+
+Make sure `echo $CMAP` shows that /lib/resource/cmap path.
+
+
+
+
+3. Install SQLite for database
 
 sudo apt install sqlite3
 
@@ -30,7 +41,7 @@ sudo chmod 777 invotract.db
 sudo chmod 777 ../phpliteadmin
 
 
-3. [OPTIONAL] Install PHPLiteAdmin for easier DB management
+4. [OPTIONAL] Install PHPLiteAdmin for easier DB management
 
 sudo apt-get install php7.0-sqlite3
 
@@ -52,5 +63,5 @@ Check if it is working at:
 localhost/phpliteadmin/phpliteadmin.php
 
 
-4. Run the project
+5. Run the project
 - Run the project using `java -jar invotract.jar`
